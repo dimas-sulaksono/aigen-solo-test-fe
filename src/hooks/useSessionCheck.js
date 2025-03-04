@@ -6,7 +6,7 @@ const useSessionCheck = () => {
   const router = useRouter();
 
   useEffect(() => {
-    const isLoggedIn = sessionStorage.getItem("isLoggedIn");
+    const isLoggedIn = localStorage.getItem("isLoggedIn");
 
     if (!isLoggedIn) {
       router.push("/login"); // Redirect ke login jika belum login

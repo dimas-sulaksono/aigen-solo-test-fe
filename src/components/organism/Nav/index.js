@@ -1,7 +1,6 @@
 import ButtonNormal from "@/components/atoms/ButtonNormal";
 import React, { useEffect, useState } from "react";
 import ButtonAccount from "@/components/atoms/ButtonAccount";
-import MyCart from "@/components/molecules/MyCart";
 import ButtonBurger from "@/components/atoms/ButtonBurger";
 import MenuContentButtonBurger from "@/components/atoms/MenuContentButtonBurger";
 import MenuContent from "@/components/molecules/MenuContent";
@@ -35,14 +34,11 @@ const Nav = () => {
               <Logo />
 
               <MenuContent />
-              {/* <p>halo={isLoggedIn}</p> */}
-              {/* <p>halo2={localStorage.getItem("isLoggedIn")}</p> */}
             </div>
 
             <div class="flex items-center lg:space-x-2">
               {isLoggedIn != null ? (
                 <>
-                  <MyCart />
                   <ButtonAccount />
                 </>
               ) : (

@@ -1,14 +1,12 @@
 import React from "react";
 
-const Heart = ({ className = "-ms-2 me-2 h-5 w-5" }) => {
+const ArrowRight = () => {
   return (
     <>
       <svg
-        class={className}
+        class="h-5 w-5"
         aria-hidden="true"
         xmlns="http://www.w3.org/2000/svg"
-        width="24"
-        height="24"
         fill="none"
         viewBox="0 0 24 24"
       >
@@ -17,11 +15,11 @@ const Heart = ({ className = "-ms-2 me-2 h-5 w-5" }) => {
           stroke-linecap="round"
           stroke-linejoin="round"
           stroke-width="2"
-          d="M12.01 6.001C6.5 1 1 8 5.782 13.001L12.011 20l6.23-7C23 8 17.5 1 12.01 6.002Z"
+          d="M19 12H5m14 0-4 4m4-4-4-4"
         />
       </svg>
     </>
   );
 };
 
-export default Heart;
+export default ArrowRight;

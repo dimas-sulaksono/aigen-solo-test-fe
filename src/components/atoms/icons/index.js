@@ -1,3 +1,5 @@
+import CrossDelete from "../CrossDelete";
+import ArrowRight from "./ArrowRight";
 import Cal from "./Cal";
 import CalBlack from "./CalBlack";
 import Cart from "./Cart";
@@ -11,17 +13,21 @@ import Heart from "./Heart";
 import Home from "./Home";
 import LogoSeakun from "./LogoSeakun";
 import Loupe from "./Loupe";
+import Minus from "./Minus";
 import Path from "./Path";
+import Plus from "./Plus";
 import Sort from "./Sort";
 import Star from "./Star";
 import WhiteDot from "./WhiteDot";
 
 const Icons = {
+  ArrowRight,
   Cal,
   CalBlack,
   Cart,
   Cash,
   CheckBox,
+  CrossDelete,
   DeliveryCar,
   Dropdown,
   EyeSlash,
@@ -30,7 +36,9 @@ const Icons = {
   Home,
   LogoSeakun,
   Loupe,
+  Minus,
   Path,
+  Plus,
   Sort,
   Star,
   WhiteDot,

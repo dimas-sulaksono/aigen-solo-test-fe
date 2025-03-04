@@ -6,8 +6,11 @@ import { formatCurrency } from "@/helper/util/formatCurrency";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import useAddToCart from "@/hooks/useAddToCart";
 
 const CardProduct = ({ id, title, price = 0, image, alt, inStock = true }) => {
+  const { addToCart } = useAddToCart();
+
   return (
     <>
       <div
@@ -99,6 +102,7 @@ const CardProduct = ({ id, title, price = 0, image, alt, inStock = true }) => {
 
             <button
               type="button"
+              onClick={() => addToCart(id, 1)}
               disabled={!inStock} // Disable button if out of stock
               className={`inline-flex items-center rounded-lg px-5 py-2.5 text-sm font-medium text-white focus:outline-none focus:ring-4 focus:ring-primary-300 ${
                 inStock
