@@ -1,3 +1,4 @@
+import Link from "next/link";
 import React, { useEffect, useState } from "react";
 
 const Order = () => {
@@ -45,11 +46,16 @@ const Order = () => {
     fetchOrders();
   }, [userId, currentPage]);
 
-  const handleCancel = async (orderId) => {
+  const handleCancel = async (orderId, userId) => {
     try {
-      await fetch(`http://localhost:8080/api/order/cancel/${orderId}`, {
-        method: "PUT",
-      });
+      await fetch(
+        `http://localhost:8080/api/order/${orderId}/status?status=CANCELED&changedBy=${userId}`,
+        {
+          //{{baseurl}}/order/507db9b5-1631-41d7-93a9-6079ce93b7a8/status?status=SHIPPED&changedBy=1266cf39-da2b-49c3-818c-3dd27de83d3f
+
+          method: "PUT",
+        },
+      );
       setOrders(
         orders.map((order) =>
           order.id === orderId ? { ...order, status: "CANCELED" } : order,
@@ -111,21 +117,17 @@ const Order = () => {
                     </p>
                   </div>
                   <div>
-                    {order.status === "PENDING" ? (
-                      <button
-                        className="rounded-lg bg-red-500 px-4 py-2 text-white"
-                        onClick={() => handleCancel(order.id)}
-                      >
-                        Cancel Order
+                    <button
+                      className={`rounded-lg bg-red-500 px-4 py-2 text-white ${order.status === "PENDING" ? "opacity-100" : "disabled opacity-50"}`}
+                      onClick={() => handleCancel(order.id, userId)}
+                    >
+                      Cancel Order
+                    </button>
+                    <Link href={`/order/${order.id}`}>
+                      <button className="ml-2 rounded-lg bg-blue-500 px-4 py-2 text-white">
+                        View Details
                       </button>
-                    ) : (
-                      <a
-                        href={`/product/${order.id}`}
-                        className="rounded-lg bg-blue-500 px-4 py-2 text-white"
-                      >
-                        Buy Again
-                      </a>
-                    )}
+                    </Link>
                   </div>
                 </div>
               </div>

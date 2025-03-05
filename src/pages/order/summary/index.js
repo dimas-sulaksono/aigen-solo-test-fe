@@ -59,7 +59,7 @@ const OrderSummary = () => {
 
       if (res.ok) {
         console.log("Order placed successfully");
-        // router.push("/order-success"); // Redirect ke halaman sukses order
+        router.push("/order");
       } else {
         console.error("Failed to place order");
       }
