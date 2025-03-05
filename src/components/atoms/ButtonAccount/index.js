@@ -75,62 +75,22 @@ const ButtonAccount = () => {
         <ul class="p-2 text-start text-sm font-medium text-gray-900 dark:text-white">
           <li>
             <Link
-              href="#"
+              href="/cart"
               title=""
               class="inline-flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-600"
             >
               {" "}
-              My Account{" "}
-            </Link>
-          </li>
-          <li>
-            <a
-              href="#"
-              title=""
-              class="inline-flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-600"
-            >
-              {" "}
-              My Orders{" "}
-            </a>
-          </li>
-          <li>
-            <Link
-              href="#"
-              title=""
-              class="inline-flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-600"
-            >
-              {" "}
-              Settings{" "}
+              My Cart{" "}
             </Link>
           </li>
           <li>
             <Link
-              href="#"
+              href="/order"
               title=""
               class="inline-flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-600"
             >
               {" "}
-              Favourites{" "}
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="#"
-              title=""
-              class="inline-flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-600"
-            >
-              {" "}
-              Delivery Addresses{" "}
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="#"
-              title=""
-              class="inline-flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-600"
-            >
-              {" "}
-              Billing Data{" "}
+              My Order{" "}
             </Link>
           </li>
         </ul>

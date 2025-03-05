@@ -23,15 +23,6 @@ const MenuContent = () => {
             Products
           </Link>
         </li>
-        <li class="shrink-0">
-          <Link
-            href="/"
-            title=""
-            class="flex text-sm font-medium text-gray-900 hover:text-primary-700 dark:text-white dark:hover:text-primary-500"
-          >
-            Best Price
-          </Link>
-        </li>
       </ul>
     </>
   );
