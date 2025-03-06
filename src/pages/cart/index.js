@@ -1,57 +1,31 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import Icons from "@/components/atoms/icons";
 import OrderSummary from "@/components/organism/OrderSummary";
 import { formatCurrency } from "@/helper/util/formatCurrency";
-import useSessionCheck from "@/hooks/useSessionCheck";
+import useAuth from "@/hooks/useAuth";
 
+const api = process.env.NEXT_PUBLIC_API;
 const dir = process.env.NEXT_PUBLIC_DIR;
 
 const Cart = () => {
+  const { loading, isAuthenticated, userId } = useAuth();
   const [cartItems, setCartItems] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [userId, setUserId] = useState(null);
-  const [username, setUsername] = useState(null);
-
-  const isLoading = useSessionCheck();
-
-  useEffect(() => {
-    const storedUsername = localStorage.getItem("username");
-    if (storedUsername) {
-      setUsername(storedUsername);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (!username) return;
-
-    const fetchUserId = async () => {
-      try {
-        const res = await fetch(`http://localhost:8080/api/user/${username}`);
-        const data = await res.json();
-        setUserId(data.data.uuid);
-      } catch (error) {
-        console.error("Error fetching user ID:", error);
-      }
-    };
-
-    fetchUserId();
-  }, [username]);
+  const [cartLoading, setCartLoading] = useState(true);
 
   useEffect(() => {
     if (!userId) return;
 
     const fetchCart = async () => {
-      setLoading(true);
+      setCartLoading(true);
       try {
-        const res = await fetch(`http://localhost:8080/api/cart/${userId}`);
+        const res = await fetch(`${api}/cart/${userId}`);
         const data = await res.json();
         setCartItems(data.data);
       } catch (error) {
         console.error("Error fetching cart items:", error);
       } finally {
-        setLoading(false);
+        setCartLoading(false);
       }
     };
 
@@ -62,7 +36,7 @@ const Cart = () => {
     if (newQuantity < 1) return;
 
     try {
-      const res = await fetch("http://localhost:8080/api/cart", {
+      const res = await fetch(`${api}/cart`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ userId, productId, quantity: newQuantity }),
@@ -82,6 +56,9 @@ const Cart = () => {
     }
   };
 
+  if (loading) return <p>Checking session...</p>;
+  if (!isAuthenticated) return null;
+
   return (
     <section className="bg-white py-8 dark:bg-gray-900 md:py-16">
       <div className="mx-auto max-w-screen-xl px-4 2xl:px-0">
@@ -90,7 +67,7 @@ const Cart = () => {
         </h2>
         <div className="mt-6 sm:mt-8 md:gap-6 lg:flex lg:items-start xl:gap-8">
           <div className="w-full lg:max-w-2xl xl:max-w-4xl">
-            {loading ? (
+            {cartLoading ? (
               <p>Loading cart...</p>
             ) : cartItems.length === 0 ? (
               <p>Your cart is empty.</p>

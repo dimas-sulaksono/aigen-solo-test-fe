@@ -1,31 +1,15 @@
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
+import useAuth from "@/hooks/useAuth";
+
+const api = process.env.NEXT_PUBLIC_API;
 
 const Order = () => {
+  const { loading, isAuthenticated, userId } = useAuth();
   const [orders, setOrders] = useState([]);
-  const [userId, setUserId] = useState(null);
   const [statusFilter, setStatusFilter] = useState("All");
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
-
-  useEffect(() => {
-    const storedUsername = localStorage.getItem("username");
-    if (!storedUsername) return;
-
-    const fetchUserId = async () => {
-      try {
-        const res = await fetch(
-          `http://localhost:8080/api/user/${storedUsername}`,
-        );
-        const data = await res.json();
-        setUserId(data.data.uuid);
-      } catch (error) {
-        console.error("Error fetching user ID:", error);
-      }
-    };
-
-    fetchUserId();
-  }, []);
 
   useEffect(() => {
     if (!userId) return;
@@ -33,7 +17,7 @@ const Order = () => {
     const fetchOrders = async () => {
       try {
         const res = await fetch(
-          `http://localhost:8080/api/order/${userId}?page=${currentPage}&size=10`,
+          `${api}/order/${userId}?page=${currentPage}&size=10`,
         );
         const data = await res.json();
         setOrders(data.data.content);
@@ -46,13 +30,11 @@ const Order = () => {
     fetchOrders();
   }, [userId, currentPage]);
 
-  const handleCancel = async (orderId, userId) => {
+  const handleCancel = async (orderId) => {
     try {
       await fetch(
-        `http://localhost:8080/api/order/${orderId}/status?status=CANCELED&changedBy=${userId}`,
+        `${api}/order/${orderId}/status?status=CANCELED&changedBy=${userId}`,
         {
-          //{{baseurl}}/order/507db9b5-1631-41d7-93a9-6079ce93b7a8/status?status=SHIPPED&changedBy=1266cf39-da2b-49c3-818c-3dd27de83d3f
-
           method: "PUT",
         },
       );
@@ -65,6 +47,9 @@ const Order = () => {
       console.error("Error canceling order:", error);
     }
   };
+
+  if (loading) return <p>Checking session...</p>;
+  if (!isAuthenticated) return null;
 
   const filteredOrders =
     statusFilter === "All"
@@ -119,7 +104,7 @@ const Order = () => {
                   <div>
                     <button
                       className={`rounded-lg bg-red-500 px-4 py-2 text-white ${order.status === "PENDING" ? "opacity-100" : "disabled opacity-50"}`}
-                      onClick={() => handleCancel(order.id, userId)}
+                      onClick={() => handleCancel(order.id)}
                     >
                       Cancel Order
                     </button>

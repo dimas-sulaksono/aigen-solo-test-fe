@@ -5,6 +5,7 @@ import CalBlack from "./CalBlack";
 import Cart from "./Cart";
 import Cash from "./Cash";
 import CheckBox from "./CheckBox";
+import Checked from "./Checked";
 import DeliveryCar from "./DeliveryCar";
 import Dropdown from "./Dropdown";
 import EyeSlash from "./EyeSlash";
@@ -29,6 +30,7 @@ const Icons = {
   Cart,
   Cash,
   CheckBox,
+  Checked,
   CrossDelete,
   DeliveryCar,
   Dropdown,

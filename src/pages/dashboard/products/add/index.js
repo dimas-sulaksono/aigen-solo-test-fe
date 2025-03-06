@@ -1,7 +1,11 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
+import useAuthGuard from "@/hooks/useAuthGuard";
+
+const api = process.env.NEXT_PUBLIC_API;
 
 const ProductAdd = () => {
+  const { loading, isAuthorized } = useAuthGuard();
   const router = useRouter();
   const [categories, setCategories] = useState([]);
 
@@ -14,12 +18,12 @@ const ProductAdd = () => {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    fetchCategories();
-  }, []);
+    if (isAuthorized) fetchCategories();
+  }, [isAuthorized]);
 
   const fetchCategories = async () => {
     try {
-      const res = await fetch("http://localhost:8080/api/category");
+      const res = await fetch(`${api}/category`);
       const data = await res.json();
       setCategories(data.data);
     } catch (error) {
@@ -47,7 +51,7 @@ const ProductAdd = () => {
       }
 
       try {
-        const res = await fetch("http://localhost:8080/api/product", {
+        const res = await fetch(`${api}/product`, {
           method: "POST",
           body: formData,
         });
@@ -62,9 +66,12 @@ const ProductAdd = () => {
         console.error("Error saving product:", error);
       }
     } catch (err) {
-      setError("Gagal menambahkan todolist.");
+      setError("Gagal menambahkan produk.");
     }
   };
+
+  if (loading) return <p>Checking access...</p>;
+  if (!isAuthorized) return null; // Redirect handled in hook
 
   return (
     <section className="mx-auto max-w-3xl rounded-lg bg-white p-6 shadow-md">

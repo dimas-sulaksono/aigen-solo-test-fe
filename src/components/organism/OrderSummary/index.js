@@ -18,7 +18,7 @@ const OrderSummary = () => {
                   Original price
                 </dt>
                 <dd class="text-base font-medium text-gray-900 dark:text-white">
-                  $7,592.00
+                  -
                 </dd>
               </dl>
 
@@ -26,7 +26,7 @@ const OrderSummary = () => {
                 <dt class="text-base font-normal text-gray-500 dark:text-gray-400">
                   Savings
                 </dt>
-                <dd class="text-base font-medium text-green-600">-$299.00</dd>
+                <dd class="text-base font-medium text-green-600">-</dd>
               </dl>
 
               <dl class="flex items-center justify-between gap-4">
@@ -34,7 +34,7 @@ const OrderSummary = () => {
                   Store Pickup
                 </dt>
                 <dd class="text-base font-medium text-gray-900 dark:text-white">
-                  $99
+                  -
                 </dd>
               </dl>
 
@@ -43,7 +43,7 @@ const OrderSummary = () => {
                   Tax
                 </dt>
                 <dd class="text-base font-medium text-gray-900 dark:text-white">
-                  $799
+                  -
                 </dd>
               </dl>
             </div>
@@ -53,7 +53,7 @@ const OrderSummary = () => {
                 Total
               </dt>
               <dd class="text-base font-bold text-gray-900 dark:text-white">
-                $8,191.00
+                -
               </dd>
             </dl>
           </div>

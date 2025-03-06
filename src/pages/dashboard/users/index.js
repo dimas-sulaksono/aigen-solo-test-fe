@@ -2,26 +2,28 @@
 
 import { useState, useEffect } from "react";
 import axios from "axios";
+import useAuthGuard from "@/hooks/useAuthGuard";
 
-const API_BASE_URL = "http://localhost:8080/api/user";
+const api = process.env.NEXT_PUBLIC_API + "/user";
 
 export default function UserDashboard() {
+  const { loading, isAuthorized } = useAuthGuard();
   const [users, setUsers] = useState([]);
   const [roleFilter, setRoleFilter] = useState("");
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
-  const [loading, setLoading] = useState(false);
+  const [dataLoading, setDataLoading] = useState(false);
 
   useEffect(() => {
-    fetchUsers();
-  }, [roleFilter, page]);
+    if (isAuthorized) fetchUsers();
+  }, [isAuthorized, roleFilter, page]);
 
   const fetchUsers = async () => {
-    setLoading(true);
+    setDataLoading(true);
     try {
-      let url = `${API_BASE_URL}?page=${page}&size=5`;
+      let url = `${api}?page=${page}&size=5`;
       if (roleFilter) {
-        url = `${API_BASE_URL}/search?role=${roleFilter}`;
+        url = `${api}/search?role=${roleFilter}&page=${page}&size=5`;
       }
       const response = await axios.get(url);
       setUsers(response.data.data);
@@ -29,12 +31,12 @@ export default function UserDashboard() {
     } catch (error) {
       console.error("Error fetching users:", error);
     }
-    setLoading(false);
+    setDataLoading(false);
   };
 
   const updateUserRole = async (userId, newRole) => {
     try {
-      await axios.put(`${API_BASE_URL}/update/${userId}`, { role: newRole });
+      await axios.put(`${api}/update/${userId}`, { role: newRole });
       fetchUsers();
     } catch (error) {
       console.error("Error updating user role:", error);
@@ -50,6 +52,9 @@ export default function UserDashboard() {
     }
   };
 
+  if (loading || dataLoading) return <p>Loading...</p>;
+  if (!isAuthorized) return null;
+
   return (
     <div className="p-4">
       <h1 className="mb-4 text-2xl font-bold">User Dashboard</h1>
@@ -64,45 +69,41 @@ export default function UserDashboard() {
           <option value="CUSTOMER">CUSTOMER</option>
         </select>
       </div>
-      {loading ? (
-        <p>Loading...</p>
-      ) : (
-        <table className="w-full border-collapse border border-gray-300">
-          <thead>
-            <tr className="bg-gray-200">
-              <th className="border p-2">Username</th>
-              <th className="border p-2">Email</th>
-              <th className="border p-2">Role</th>
-              <th className="border p-2">Actions</th>
+      <table className="w-full border-collapse border border-gray-300">
+        <thead>
+          <tr className="bg-gray-200">
+            <th className="border p-2">Username</th>
+            <th className="border p-2">Email</th>
+            <th className="border p-2">Role</th>
+            <th className="border p-2">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {users.map((user) => (
+            <tr key={user.uuid} className="border">
+              <td className="p-2">{user.username}</td>
+              <td className="p-2">{user.email}</td>
+              <td className="p-2">
+                <select
+                  value={user.role}
+                  onChange={(e) => updateUserRole(user.uuid, e.target.value)}
+                >
+                  <option value="ADMIN">ADMIN</option>
+                  <option value="CUSTOMER">CUSTOMER</option>
+                </select>
+              </td>
+              <td className="p-2">
+                <button
+                  onClick={() => deleteUser(user.uuid)}
+                  className="bg-red-500 p-1 text-white"
+                >
+                  Delete
+                </button>
+              </td>
             </tr>
-          </thead>
-          <tbody>
-            {users.map((user) => (
-              <tr key={user.uuid} className="border">
-                <td className="p-2">{user.username}</td>
-                <td className="p-2">{user.email}</td>
-                <td className="p-2">
-                  <select
-                    value={user.role}
-                    onChange={(e) => updateUserRole(user.uuid, e.target.value)}
-                  >
-                    <option value="ADMIN">ADMIN</option>
-                    <option value="CUSTOMER">CUSTOMER</option>
-                  </select>
-                </td>
-                <td className="p-2">
-                  <button
-                    onClick={() => deleteUser(user.uuid)}
-                    className="bg-red-500 p-1 text-white"
-                  >
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
+          ))}
+        </tbody>
+      </table>
       <div className="mt-4">
         <button
           onClick={() => setPage((prev) => Math.max(prev - 1, 0))}

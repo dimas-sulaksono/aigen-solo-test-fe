@@ -1,9 +1,13 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
+import useAuthGuard from "@/hooks/useAuthGuard";
+
+const api = process.env.NEXT_PUBLIC_API;
 
 const ProductUpdate = () => {
+  const { loading, isAuthorized } = useAuthGuard();
   const router = useRouter();
-  const { id } = router.query; // Ambil ID produk dari URL dengan aman
+  const { id } = router.query;
 
   const [categories, setCategories] = useState([]);
   const [product, setProduct] = useState(null);
@@ -16,15 +20,15 @@ const ProductUpdate = () => {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    if (id) {
+    if (isAuthorized && id) {
       fetchCategories();
       fetchProductDetails();
     }
-  }, [id]); // Pastikan fetch dilakukan hanya setelah `id` tersedia
+  }, [isAuthorized, id]); // Pastikan fetch dilakukan hanya setelah `id` tersedia
 
   const fetchCategories = async () => {
     try {
-      const res = await fetch("http://localhost:8080/api/category");
+      const res = await fetch(`${api}/category`);
       const data = await res.json();
       setCategories(data.data);
     } catch (error) {
@@ -34,7 +38,7 @@ const ProductUpdate = () => {
 
   const fetchProductDetails = async () => {
     try {
-      const res = await fetch(`http://localhost:8080/api/product/id/${id}`);
+      const res = await fetch(`${api}/product/id/${id}`);
       const data = await res.json();
       if (data.status === 200) {
         setProduct(data.data);
@@ -67,7 +71,7 @@ const ProductUpdate = () => {
         formData.append("imagePath", image);
       }
 
-      const res = await fetch(`http://localhost:8080/api/product/${id}`, {
+      const res = await fetch(`${api}/product/${id}`, {
         method: "PUT",
         body: formData,
       });
@@ -83,7 +87,9 @@ const ProductUpdate = () => {
     }
   };
 
-  if (!id || !product) return <p>Loading...</p>; // Tambahkan pengecekan agar tidak error
+  if (loading) return <p>Checking access...</p>;
+  if (!isAuthorized) return null;
+  if (!id || !product) return <p>Loading...</p>;
 
   return (
     <section className="mx-auto max-w-3xl rounded-lg bg-white p-6 shadow-md">

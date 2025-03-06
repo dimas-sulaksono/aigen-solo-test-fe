@@ -2,27 +2,33 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { formatCurrency } from "@/helper/util/formatCurrency";
+import useAuthGuard from "@/hooks/useAuthGuard";
 
+const api = process.env.NEXT_PUBLIC_API;
 const dir = process.env.NEXT_PUBLIC_DIR;
 
 const DashboardProduct = () => {
+  const { loading, isAuthorized } = useAuthGuard();
   const [products, setProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [loading, setLoading] = useState(true);
+  const [dataLoading, setDataLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
 
   useEffect(() => {
-    fetchProducts();
-  }, []);
+    if (isAuthorized) fetchProducts();
+  }, [isAuthorized, currentPage]);
 
   const fetchProducts = async () => {
     try {
-      const res = await fetch("http://localhost:8080/api/product");
+      const res = await fetch(`${api}/product?page=${currentPage}&size=10`);
       const data = await res.json();
       setProducts(data.data);
+      setTotalPages(data.totalPages);
     } catch (error) {
       console.error("Error fetching products:", error);
     } finally {
-      setLoading(false);
+      setDataLoading(false);
     }
   };
 
@@ -34,9 +40,7 @@ const DashboardProduct = () => {
       return;
     }
     try {
-      const res = await fetch(
-        `http://localhost:8080/api/product/search?name=${value}`,
-      );
+      const res = await fetch(`${api}/product/search?name=${value}`);
       const data = await res.json();
       setProducts(data.data);
     } catch (error) {
@@ -47,7 +51,7 @@ const DashboardProduct = () => {
   const handleDelete = async (id) => {
     if (!confirm("Are you sure you want to delete this product?")) return;
     try {
-      await fetch(`http://localhost:8080/api/product/${id}`, {
+      await fetch(`${api}/product/${id}`, {
         method: "DELETE",
       });
       setProducts(products.filter((product) => product.id !== id));
@@ -56,7 +60,8 @@ const DashboardProduct = () => {
     }
   };
 
-  if (loading) return <p>Loading products...</p>;
+  if (loading || dataLoading) return <p>Loading products...</p>;
+  if (!isAuthorized) return null;
 
   return (
     <section className="bg-gray-50 py-3 dark:bg-gray-900 sm:py-5">
@@ -65,7 +70,7 @@ const DashboardProduct = () => {
           <div className="flex flex-col space-y-3 px-4 py-3 lg:flex-row lg:items-center lg:justify-between lg:space-x-4 lg:space-y-0">
             <h5>
               <span className="text-gray-500">All Products:</span>
-              <span className="dark:text-white">{"products.length"}</span>
+              <span className="dark:text-white">{products.length}</span>
             </h5>
             <input
               type="text"
@@ -127,6 +132,25 @@ const DashboardProduct = () => {
               </tbody>
             </table>
           </div>
+        </div>
+        <div className="mt-4 flex justify-center">
+          <button
+            className="mx-1 rounded border bg-gray-300 px-4 py-2"
+            disabled={currentPage === 0}
+            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 0))}
+          >
+            Prev
+          </button>
+          <span className="px-4 py-2">
+            Page {currentPage + 1} of {totalPages}
+          </span>
+          <button
+            className="mx-1 rounded border bg-gray-300 px-4 py-2"
+            disabled={currentPage >= totalPages - 1}
+            onClick={() => setCurrentPage((prev) => prev + 1)}
+          >
+            Next
+          </button>
         </div>
       </div>
     </section>

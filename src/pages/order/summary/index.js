@@ -3,47 +3,30 @@ import { useRouter } from "next/router";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { formatCurrency } from "@/helper/util/formatCurrency";
+import useAuth from "@/hooks/useAuth";
 
+const api = process.env.NEXT_PUBLIC_API;
 const dir = process.env.NEXT_PUBLIC_DIR;
 
 const OrderSummary = () => {
+  const { loading, isAuthenticated, userId } = useAuth();
   const router = useRouter();
-  const [userId, setUserId] = useState(null);
   const [cartItems, setCartItems] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const storedUsername = localStorage.getItem("username");
-    if (!storedUsername) return;
-
-    const fetchUserId = async () => {
-      try {
-        const res = await fetch(
-          `http://localhost:8080/api/user/${storedUsername}`,
-        );
-        const data = await res.json();
-        setUserId(data.data.uuid);
-      } catch (error) {
-        console.error("Error fetching user ID:", error);
-      }
-    };
-
-    fetchUserId();
-  }, []);
+  const [cartLoading, setCartLoading] = useState(true);
 
   useEffect(() => {
     if (!userId) return;
 
     const fetchCart = async () => {
-      setLoading(true);
+      setCartLoading(true);
       try {
-        const res = await fetch(`http://localhost:8080/api/cart/${userId}`);
+        const res = await fetch(`${api}/cart/${userId}`);
         const data = await res.json();
         setCartItems(data.data);
       } catch (error) {
         console.error("Error fetching cart items:", error);
       } finally {
-        setLoading(false);
+        setCartLoading(false);
       }
     };
 
@@ -52,7 +35,7 @@ const OrderSummary = () => {
 
   const handleCheckout = async () => {
     try {
-      const res = await fetch(`http://localhost:8080/api/order/${userId}`, {
+      const res = await fetch(`${api}/order/${userId}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
       });
@@ -67,6 +50,9 @@ const OrderSummary = () => {
       console.error("Error during checkout:", error);
     }
   };
+
+  if (loading) return <p>Checking session...</p>;
+  if (!isAuthenticated) return null; // Redirect handled in hook
 
   return (
     <>
@@ -100,10 +86,8 @@ const OrderSummary = () => {
                           x{item.quantity}
                         </td>
                         <td className="p-4 text-right text-base font-bold text-gray-900 dark:text-white">
-                          Rp
-                          {(
-                            item.product.price * item.quantity
-                          ).toLocaleString()}
+                          Rp{" "}
+                          {formatCurrency(item.product.price * item.quantity)}
                         </td>
                       </tr>
                     ))}
@@ -117,21 +101,21 @@ const OrderSummary = () => {
                       Total
                     </dt>
                     <dd className="text-lg font-bold text-gray-900 dark:text-white">
-                      Rp
-                      {cartItems
-                        .reduce(
+                      Rp{" "}
+                      {formatCurrency(
+                        cartItems.reduce(
                           (total, item) =>
                             total + item.product.price * item.quantity,
                           0,
-                        )
-                        .toLocaleString()}
+                        ),
+                      )}
                     </dd>
                   </dl>
                 </div>
                 <div className="gap-4 sm:flex sm:items-center">
                   <button
                     type="button"
-                    className="w-full rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700"
+                    className="w-full rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-sm font-medium text-gray-900"
                     onClick={() => router.push("/products")}
                   >
                     Return to Shopping
@@ -139,7 +123,7 @@ const OrderSummary = () => {
                   <button
                     type="button"
                     onClick={handleCheckout}
-                    className="mt-4 flex w-full items-center justify-center rounded-lg bg-primary-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 sm:mt-0"
+                    className="mt-4 flex w-full items-center justify-center rounded-lg bg-primary-700 px-5 py-2.5 text-sm font-medium text-white"
                   >
                     Send the order
                   </button>
