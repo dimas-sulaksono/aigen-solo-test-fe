@@ -14,8 +14,10 @@ import Home from "./Home";
 import LogoSeakun from "./LogoSeakun";
 import Loupe from "./Loupe";
 import Minus from "./Minus";
+import Next from "./Next";
 import Path from "./Path";
 import Plus from "./Plus";
+import Previous from "./Previous";
 import Sort from "./Sort";
 import Star from "./Star";
 import WhiteDot from "./WhiteDot";
@@ -37,8 +39,10 @@ const Icons = {
   LogoSeakun,
   Loupe,
   Minus,
+  Next,
   Path,
   Plus,
+  Previous,
   Sort,
   Star,
   WhiteDot,
