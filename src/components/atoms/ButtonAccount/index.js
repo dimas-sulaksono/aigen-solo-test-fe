@@ -75,6 +75,18 @@ const ButtonAccount = () => {
         <ul class="p-2 text-start text-sm font-medium text-gray-900 dark:text-white">
           <li>
             <Link
+              href="#"
+              title=""
+              class="inline-flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-600"
+            >
+              {`Hai, ` + localStorage.getItem("username")}
+            </Link>
+          </li>
+        </ul>
+
+        <ul class="p-2 text-start text-sm font-medium text-gray-900 dark:text-white">
+          <li>
+            <Link
               href="/cart"
               title=""
               class="inline-flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-600"
@@ -91,6 +103,39 @@ const ButtonAccount = () => {
             >
               {" "}
               My Order{" "}
+            </Link>
+          </li>
+        </ul>
+
+        <ul class="p-2 text-start text-sm font-medium text-gray-900 dark:text-white">
+          <li>
+            <Link
+              href="/dashboard/users"
+              title=""
+              class="inline-flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-600"
+            >
+              {" "}
+              User Management{" "}
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="/dashboard/products"
+              title=""
+              class="inline-flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-600"
+            >
+              {" "}
+              Product Management{" "}
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="/dashboard/orders"
+              title=""
+              class="inline-flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-600"
+            >
+              {" "}
+              Order Management{" "}
             </Link>
           </li>
         </ul>
